@@ -22,21 +22,17 @@ class WeChatAccessibilityService : AccessibilityService() {
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
         if (event.packageName != WECHAT_PACKAGE) return
-        val rootNode = Gson().toJson(parseNode(rootInActiveWindow))
-        LogManager.log("事件变化: eventType = ${event.eventType}, contentChangeTypes = ${event.contentChangeTypes}, ${rootNode.contains("小三")}")
-
-    //        event.source?.let { findRecyclerView(it) }
-//
+        LogManager.log("onAccessibilityEvent: eventType = ${event.eventType}, contentChangeTypes = ${event.contentChangeTypes}")
         when (event.eventType) {
             AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED -> {
                 val rootNode = parseNode(event.source).toString()
-//                LogManager.log("从根节点: ${rootNode.contains("小三")}")
+                LogManager.log("onAccessibilityEvent nodeTree = $rootNode")
             }
         }
     }
 
     // 递归遍历获取节点信息
-    fun parseNode(node: AccessibilityNodeInfo?): NodeInfo? {
+    private fun parseNode(node: AccessibilityNodeInfo?): NodeInfo? {
         if (node == null || !node.isVisibleToUser) return null
 
         val bounds = Rect()
@@ -47,17 +43,22 @@ class WeChatAccessibilityService : AccessibilityService() {
         nodeInfo.className = node.className.toString()
         nodeInfo.text = node.text
         nodeInfo.isSelected = node.isSelected
-        nodeInfo.isChecked = node.isChecked
-        nodeInfo.isVisibleToUser = node.isVisibleToUser
+        if (node.isCheckable) {
+            nodeInfo.isChecked = node.isChecked
+        }
         nodeInfo.contentDescription = node.contentDescription
         nodeInfo.bounds = bounds
 
         // 遍历子节点
-        for (i in 0 until node.childCount) {
-            val childInfo = parseNode(node.getChild(i))
-            if (childInfo != null) {
-                nodeInfo.children.add(childInfo)
+        if (node.childCount > 0) {
+            val children = mutableListOf<NodeInfo>()
+            for (i in 0 until node.childCount) {
+                val childInfo = parseNode(node.getChild(i))
+                if (childInfo != null) {
+                    children.add(childInfo)
+                }
             }
+            nodeInfo.children = children
         }
 
         return nodeInfo

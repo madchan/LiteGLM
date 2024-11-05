@@ -5,15 +5,14 @@ import com.google.gson.Gson
 import org.json.JSONObject
 
 class NodeInfo {
-    var text: CharSequence? = null
     var viewIdResourceName: CharSequence? = null
     var className: CharSequence? = null
-    var isSelected: Boolean = false
-    var isChecked: Boolean = false
-    var isVisibleToUser: Boolean = false
     var contentDescription: CharSequence? = null
     var bounds: Rect? = null
-    var children: MutableList<NodeInfo> = mutableListOf()
+    var text: CharSequence? = null
+    var isSelected: Boolean? = null
+    var isChecked: Boolean? = null
+    var children: MutableList<NodeInfo>? = null
 
     override fun toString(): String {
         return Gson().toJson(this)
