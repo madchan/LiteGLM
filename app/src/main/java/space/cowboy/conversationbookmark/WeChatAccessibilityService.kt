@@ -1,9 +1,12 @@
 package space.cowboy.conversationbookmark
 
+import LogManager
 import android.accessibilityservice.AccessibilityService
+import android.graphics.Rect
 import android.os.Bundle
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
+import com.google.gson.Gson
 
 class WeChatAccessibilityService : AccessibilityService() {
 
@@ -19,33 +22,45 @@ class WeChatAccessibilityService : AccessibilityService() {
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
         if (event.packageName != WECHAT_PACKAGE) return
+        val rootNode = Gson().toJson(parseNode(rootInActiveWindow))
+        LogManager.log("事件变化: eventType = ${event.eventType}, contentChangeTypes = ${event.contentChangeTypes}, ${rootNode.contains("小三")}")
 
+    //        event.source?.let { findRecyclerView(it) }
+//
         when (event.eventType) {
-            AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED -> {
-                val className = event.className.toString()
-                LogManager.log("窗口变化: $className")
-
-                if (className.contains("LauncherUI")) {
-                    val rootNode = rootInActiveWindow ?: return
-                    val messageNode = rootNode.findAccessibilityNodeInfosByViewId(
-                        "$WECHAT_PACKAGE:id/b4k"
-                    ).lastOrNull()
-
-                    val groupNameNode = rootNode.findAccessibilityNodeInfosByViewId(
-                        "$WECHAT_PACKAGE:id/gas"
-                    ).firstOrNull()
-
-                    if (messageNode != null && groupNameNode != null) {
-                        val groupName = groupNameNode.text.toString()
-                        val message = messageNode.text.toString()
-                        MessageManager.saveLastMessage(groupName, message)
-                        LogManager.log("保存群消息 - 群: $groupName, 消息: $message")
-                    } else {
-                        LogManager.log("未找到群名或消息节点")
-                    }
-                }
+            AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED -> {
+                val rootNode = parseNode(event.source).toString()
+//                LogManager.log("从根节点: ${rootNode.contains("小三")}")
             }
         }
+    }
+
+    // 递归遍历获取节点信息
+    fun parseNode(node: AccessibilityNodeInfo?): NodeInfo? {
+        if (node == null || !node.isVisibleToUser) return null
+
+        val bounds = Rect()
+        node.getBoundsInScreen(bounds)
+
+        val nodeInfo = NodeInfo()
+        nodeInfo.viewIdResourceName = node.viewIdResourceName
+        nodeInfo.className = node.className.toString()
+        nodeInfo.text = node.text
+        nodeInfo.isSelected = node.isSelected
+        nodeInfo.isChecked = node.isChecked
+        nodeInfo.isVisibleToUser = node.isVisibleToUser
+        nodeInfo.contentDescription = node.contentDescription
+        nodeInfo.bounds = bounds
+
+        // 遍历子节点
+        for (i in 0 until node.childCount) {
+            val childInfo = parseNode(node.getChild(i))
+            if (childInfo != null) {
+                nodeInfo.children.add(childInfo)
+            }
+        }
+
+        return nodeInfo
     }
 
     fun findAndClickById(viewId: String): Boolean {
@@ -87,10 +102,11 @@ class WeChatAccessibilityService : AccessibilityService() {
             LogManager.log("根节点为空")
         }
 
-        val editText = rootNode.findAccessibilityNodeInfosByViewId("$WECHAT_PACKAGE:id/search_input")
-            .firstOrNull() ?: return false.also {
-            LogManager.log("未找到输入框")
-        }
+        val editText =
+            rootNode.findAccessibilityNodeInfosByViewId("$WECHAT_PACKAGE:id/search_input")
+                .firstOrNull() ?: return false.also {
+                LogManager.log("未找到输入框")
+            }
 
         val arguments = Bundle()
         arguments.putCharSequence(

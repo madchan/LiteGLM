@@ -5,6 +5,20 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="请求无障碍服务"
+        android:onClick="performRequestAccessibilityService"
+        android:layout_marginBottom="8dp"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="请求悬浮按钮权限"
+        android:onClick="performRequestFloatWindowPermission"
+        android:layout_marginBottom="8dp"/>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
