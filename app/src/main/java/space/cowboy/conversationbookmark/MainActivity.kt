@@ -6,19 +6,36 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
 import android.view.View
+import android.widget.Button
 import android.widget.ScrollView
 import android.widget.TextView
 
 class MainActivity : Activity() {
+
     private lateinit var logTextView: TextView
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         logTextView = findViewById(R.id.logTextView)
         setupLogListener()
-        checkPermissions()
+    }
+
+    fun performRequestAccessibilityService(view: View?) {
+        if (!isAccessibilityServiceEnabled()) {
+            startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+        }
+    }
+
+    fun performRequestFloatWindowPermission(view: View?) {
+        if (!Settings.canDrawOverlays(this)) {
+            val intent = Intent(
+                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                Uri.parse("package:$packageName")
+            )
+            startActivityForResult(intent, 1234)
+        }
         startServices()
     }
 
@@ -32,20 +49,6 @@ class MainActivity : Activity() {
                     scrollView.fullScroll(View.FOCUS_DOWN)
                 }
             }
-        }
-    }
-
-    private fun checkPermissions() {
-        if (!Settings.canDrawOverlays(this)) {
-            val intent = Intent(
-                Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                Uri.parse("package:$packageName")
-            )
-            startActivityForResult(intent, 1234)
-        }
-
-        if (!isAccessibilityServiceEnabled()) {
-            startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
         }
     }
 
