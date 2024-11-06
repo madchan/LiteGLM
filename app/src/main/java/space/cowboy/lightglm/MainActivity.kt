@@ -1,4 +1,4 @@
-package space.cowboy.conversationbookmark
+package space.cowboy.lightglm
 
 import android.app.Activity
 import android.content.Intent

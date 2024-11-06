@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "space.cowboy.conversationbookmark"
+    namespace = "space.cowboy.lightglm"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "space.cowboy.conversationbookmark"
+        applicationId = "space.cowboy.lightglm"
         minSdk = 24
         targetSdk = 34
         versionCode = 1

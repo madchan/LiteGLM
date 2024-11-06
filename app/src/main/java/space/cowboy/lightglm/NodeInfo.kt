@@ -1,4 +1,4 @@
-package space.cowboy.conversationbookmark
+package space.cowboy.lightglm
 
 import android.graphics.Rect
 import com.google.gson.Gson

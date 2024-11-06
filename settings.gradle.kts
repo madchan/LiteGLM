@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "ConversationBookmark"
+rootProject.name = "LightGLM"
 include(":app")
  
