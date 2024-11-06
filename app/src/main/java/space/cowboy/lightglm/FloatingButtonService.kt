@@ -1,6 +1,6 @@
-package space.cowboy.conversationbookmark
+package space.cowboy.lightglm
 
-import space.cowboy.conversationbookmark.WeChatAccessibilityService.Companion.WECHAT_PACKAGE
+import space.cowboy.lightglm.WeChatAccessibilityService.Companion.WECHAT_PACKAGE
 import android.app.Service
 import android.content.Intent
 import android.graphics.PixelFormat

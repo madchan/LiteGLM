@@ -1,4 +1,4 @@
-package space.cowboy.conversationbookmark
+package space.cowboy.lightglm
 
 data class ChatMessage(
     val groupName: String,

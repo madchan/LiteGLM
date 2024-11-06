@@ -1,4 +1,4 @@
-package space.cowboy.conversationbookmark
+package space.cowboy.lightglm
 
 import LogManager
 import android.accessibilityservice.AccessibilityService
@@ -26,7 +26,7 @@ class WeChatAccessibilityService : AccessibilityService() {
         when (event.eventType) {
             AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED -> {
                 val rootNode = parseNode(event.source).toString()
-                LogManager.log("onAccessibilityEvent nodeTree = $rootNode")
+                LogManager.log("onAccessibilityEvent: nodeTrees = $rootNode")
             }
         }
     }

@@ -1,6 +1,6 @@
-package space.cowboy.conversationbookmark
+package space.cowboy.lightglm
 
-import space.cowboy.conversationbookmark.ChatMessage
+import space.cowboy.lightglm.ChatMessage
 
 object MessageManager {
     private val messageMap = mutableMapOf<String, ChatMessage>()
