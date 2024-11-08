@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "space.cowboy.liteglm"
+    namespace = "space.codeboy.liteglm"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "space.cowboy.liteglm"
+        applicationId = "space.codeboy.liteglm"
         minSdk = 24
         targetSdk = 34
         versionCode = 1

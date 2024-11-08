@@ -1,4 +1,4 @@
-package space.cowboy.liteglm
+package space.codeboy.liteglm
 
 data class ChatMessage(
     val groupName: String,

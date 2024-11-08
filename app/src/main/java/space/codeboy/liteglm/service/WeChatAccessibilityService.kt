@@ -1,14 +1,14 @@
-package space.cowboy.liteglm.service
+package space.codeboy.liteglm.service
 
-import space.cowboy.liteglm.util.LogManager
+import space.codeboy.liteglm.util.LogManager
 import android.accessibilityservice.AccessibilityService
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
-import space.cowboy.liteglm.ChatBot
-import space.cowboy.liteglm.NodeInfo
-import space.cowboy.liteglm.util.PromptTemplate
+import space.codeboy.liteglm.ChatBot
+import space.codeboy.liteglm.NodeInfo
+import space.codeboy.liteglm.util.PromptTemplate
 
 class WeChatAccessibilityService : AccessibilityService() {
 
@@ -80,16 +80,27 @@ class WeChatAccessibilityService : AccessibilityService() {
             it.getBoundsInScreen(nodeBounds)
             bounds.contains(nodeBounds)
         }
-        return if (targetNode?.isClickable == true) {
-            val result = targetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK)
-            LogManager.log("点击${if (result) "成功" else "失败"}")
-            result
+
+        return if (targetNode != null) {
+            return clickUntil(targetNode)
         } else {
             LogManager.log("未找到可点击节点")
             false
         }
     }
-    fun inputTextById(viewId: String, bounds: Rect, text: String, ): Boolean {
+
+    fun clickUntil(node: AccessibilityNodeInfo): Boolean {
+        if (!node.isClickable) {
+            LogManager.log("节点不可点击, 尝试点击父节点")
+            return clickUntil(node.parent)
+        } else {
+            val result = node.performAction(AccessibilityNodeInfo.ACTION_CLICK)
+            LogManager.log("点击${if (result) "成功" else "失败"}")
+            return result
+        }
+    }
+
+    fun inputTextById(viewId: String, bounds: Rect, text: String): Boolean {
         LogManager.log("尝试输入文本: $text")
         val rootNode = rootInActiveWindow ?: return false.also {
             LogManager.log("根节点为空")
@@ -97,13 +108,17 @@ class WeChatAccessibilityService : AccessibilityService() {
 
         val editText =
             rootNode.findAccessibilityNodeInfosByViewId(viewId)
-                .first {
+                .firstOrNull() {
+                    if (it == null) return false
                     val nodeBounds = Rect()
                     it.getBoundsInScreen(nodeBounds)
                     bounds.contains(nodeBounds)
-                } ?: return false.also {
-                LogManager.log("未找到输入框")
-            }
+                }
+
+        if (editText == null) {
+            LogManager.log("未找到可输入节点")
+            return false
+        }
 
         val arguments = Bundle()
         arguments.putCharSequence(

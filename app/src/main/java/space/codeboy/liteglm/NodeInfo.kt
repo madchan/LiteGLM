@@ -1,8 +1,7 @@
-package space.cowboy.liteglm
+package space.codeboy.liteglm
 
 import android.graphics.Rect
 import com.google.gson.Gson
-import org.json.JSONObject
 
 class NodeInfo {
     var viewIdResourceName: CharSequence? = null

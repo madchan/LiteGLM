@@ -1,4 +1,4 @@
-package space.cowboy.liteglm.ui.activity
+package space.codeboy.liteglm.ui.activity
 
 import android.app.Activity
 import android.content.Intent
@@ -8,10 +8,10 @@ import android.provider.Settings
 import android.view.View
 import android.widget.ScrollView
 import android.widget.TextView
-import space.cowboy.liteglm.FloatingButtonService
-import space.cowboy.liteglm.R
-import space.cowboy.liteglm.service.WeChatAccessibilityService
-import space.cowboy.liteglm.util.LogManager
+import space.codeboy.liteglm.FloatingButtonService
+import space.codeboy.liteglm.service.WeChatAccessibilityService
+import space.codeboy.liteglm.util.LogManager
+import space.codeboy.liteglm.R
 
 class MainActivity : Activity() {
 
