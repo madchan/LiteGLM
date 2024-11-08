@@ -1,8 +1,8 @@
 package space.cowboy.lightglm
 
-import space.cowboy.lightglm.ChatMessage
 
 object MessageManager {
+
     private val messageMap = mutableMapOf<String, ChatMessage>()
     
     fun saveLastMessage(groupName: String, message: String) {

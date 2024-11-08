@@ -1,6 +1,6 @@
 package space.cowboy.lightglm
 
-import space.cowboy.lightglm.WeChatAccessibilityService.Companion.WECHAT_PACKAGE
+import space.cowboy.lightglm.service.WeChatAccessibilityService.Companion.WECHAT_PACKAGE
 import android.app.Service
 import android.content.Intent
 import android.graphics.PixelFormat
@@ -9,6 +9,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
+import space.cowboy.lightglm.service.WeChatAccessibilityService
 
 class FloatingButtonService : Service() {
     private var windowManager: WindowManager? = null
@@ -50,19 +51,19 @@ class FloatingButtonService : Service() {
     private fun performSearchAction() {
         val service = WeChatAccessibilityService.instance ?: return
         
-        // 点击搜索按钮
-        service.findAndClickById("$WECHAT_PACKAGE:id/search_btn")
-        
-        // 获取群名并填入最后消息
-        val groupName = service.findTextById("$WECHAT_PACKAGE:id/gas")
-        val lastMessage = MessageManager.getLastMessage(groupName.toString())
-        
-        if (lastMessage != null) {
-            // 填入搜索内容
-            service.inputText(lastMessage)
-            // 点击第一条搜索结果
-            service.findAndClickById("$WECHAT_PACKAGE:id/search_result_item")
-        }
+//        // 点击搜索按钮
+//        service.findAndClickById("$WECHAT_PACKAGE:id/search_btn")
+//
+//        // 获取群名并填入最后消息
+//        val groupName = service.findTextById("$WECHAT_PACKAGE:id/gas")
+//        val lastMessage = MessageManager.getLastMessage(groupName.toString())
+//
+//        if (lastMessage != null) {
+//            // 填入搜索内容
+//            service.inputText(lastMessage)
+//            // 点击第一条搜索结果
+//            service.findAndClickById("$WECHAT_PACKAGE:id/search_result_item")
+//        }
     }
 
     override fun onDestroy() {

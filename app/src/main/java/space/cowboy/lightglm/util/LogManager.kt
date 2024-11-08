@@ -1,3 +1,5 @@
+package space.cowboy.lightglm.util
+
 import android.util.Log
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -11,12 +13,12 @@ object LogManager {
         val timeStamp = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())
         val logMessage = "[$timeStamp] $message"
         logs.add(logMessage)
-        Log.d("LogManager", logMessage);
+        Log.d("space.cowboy.lightglm.util.LogManager", logMessage);
         listener?.invoke(logMessage)
     }
 
     fun setLogListener(listener: (String) -> Unit) {
-        this.listener = listener
+        LogManager.listener = listener
     }
 
     fun getAllLogs(): String = logs.joinToString("\n")

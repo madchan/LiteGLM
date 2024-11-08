@@ -1,12 +1,14 @@
-package space.cowboy.lightglm
+package space.cowboy.lightglm.service
 
-import LogManager
+import space.cowboy.lightglm.util.LogManager
 import android.accessibilityservice.AccessibilityService
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
-import com.google.gson.Gson
+import space.cowboy.lightglm.ChatBot
+import space.cowboy.lightglm.NodeInfo
+import space.cowboy.lightglm.util.PromptTemplate
 
 class WeChatAccessibilityService : AccessibilityService() {
 
@@ -27,6 +29,8 @@ class WeChatAccessibilityService : AccessibilityService() {
             AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED -> {
                 val rootNode = parseNode(event.source).toString()
                 LogManager.log("onAccessibilityEvent: nodeTrees = $rootNode")
+                val template = PromptTemplate.getTemplate("给小三打声招呼", rootNode)
+                ChatBot.instance.chatCompletions(template)
             }
         }
     }
@@ -40,7 +44,7 @@ class WeChatAccessibilityService : AccessibilityService() {
 
         val nodeInfo = NodeInfo()
         nodeInfo.viewIdResourceName = node.viewIdResourceName
-        nodeInfo.className = node.className.toString()
+        nodeInfo.className = node.className?.toString()
         nodeInfo.text = node.text
         nodeInfo.isSelected = node.isSelected
         if (node.isCheckable) {
@@ -64,13 +68,18 @@ class WeChatAccessibilityService : AccessibilityService() {
         return nodeInfo
     }
 
-    fun findAndClickById(viewId: String): Boolean {
+    fun findAndClickById(viewId: String, bounds: Rect): Boolean {
         LogManager.log("尝试点击: $viewId")
         val rootNode = rootInActiveWindow ?: return false.also {
             LogManager.log("根节点为空")
         }
 
-        val targetNode = rootNode.findAccessibilityNodeInfosByViewId(viewId).firstOrNull()
+        /// 目标节点：符合条件的可点击节点
+        val targetNode = rootNode.findAccessibilityNodeInfosByViewId(viewId).first {
+            val nodeBounds = Rect()
+            it.getBoundsInScreen(nodeBounds)
+            bounds.contains(nodeBounds)
+        }
         return if (targetNode?.isClickable == true) {
             val result = targetNode.performAction(AccessibilityNodeInfo.ACTION_CLICK)
             LogManager.log("点击${if (result) "成功" else "失败"}")
@@ -80,32 +89,19 @@ class WeChatAccessibilityService : AccessibilityService() {
             false
         }
     }
-
-    fun findTextById(viewId: String): String? {
-        LogManager.log("查找文本: $viewId")
-        val rootNode = rootInActiveWindow ?: return null.also {
-            LogManager.log("根节点为空")
-        }
-
-        return rootNode.findAccessibilityNodeInfosByViewId(viewId)
-            .firstOrNull()
-            ?.text?.toString()
-            ?.also { LogManager.log("找到文本: $it") }
-            ?: run {
-                LogManager.log("未找到文本")
-                null
-            }
-    }
-
-    fun inputText(text: String): Boolean {
+    fun inputTextById(viewId: String, bounds: Rect, text: String, ): Boolean {
         LogManager.log("尝试输入文本: $text")
         val rootNode = rootInActiveWindow ?: return false.also {
             LogManager.log("根节点为空")
         }
 
         val editText =
-            rootNode.findAccessibilityNodeInfosByViewId("$WECHAT_PACKAGE:id/search_input")
-                .firstOrNull() ?: return false.also {
+            rootNode.findAccessibilityNodeInfosByViewId(viewId)
+                .first {
+                    val nodeBounds = Rect()
+                    it.getBoundsInScreen(nodeBounds)
+                    bounds.contains(nodeBounds)
+                } ?: return false.also {
                 LogManager.log("未找到输入框")
             }
 
