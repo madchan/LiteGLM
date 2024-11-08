@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "LightGLM"
+rootProject.name = "LiteGLM"
 include(":app")
  

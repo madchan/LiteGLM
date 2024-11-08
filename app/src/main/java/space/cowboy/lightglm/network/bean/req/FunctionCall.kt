@@ -1,4 +1,4 @@
-package space.cowboy.lightglm.network.bean.req
+package space.cowboy.liteglm.network.bean.req
 
 data class FunctionCall(
     val actions: List<Action>

@@ -1,14 +1,14 @@
-package space.cowboy.lightglm.service
+package space.cowboy.liteglm.service
 
-import space.cowboy.lightglm.util.LogManager
+import space.cowboy.liteglm.util.LogManager
 import android.accessibilityservice.AccessibilityService
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
-import space.cowboy.lightglm.ChatBot
-import space.cowboy.lightglm.NodeInfo
-import space.cowboy.lightglm.util.PromptTemplate
+import space.cowboy.liteglm.ChatBot
+import space.cowboy.liteglm.NodeInfo
+import space.cowboy.liteglm.util.PromptTemplate
 
 class WeChatAccessibilityService : AccessibilityService() {
 

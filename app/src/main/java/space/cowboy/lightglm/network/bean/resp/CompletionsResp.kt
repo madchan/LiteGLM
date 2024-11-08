@@ -1,4 +1,4 @@
-package space.cowboy.lightglm.network.bean.resp
+package space.cowboy.liteglm.network.bean.resp
 
 import com.google.gson.annotations.SerializedName
 

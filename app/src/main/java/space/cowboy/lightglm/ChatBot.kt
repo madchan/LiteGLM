@@ -1,12 +1,12 @@
-package space.cowboy.lightglm
+package space.cowboy.liteglm
 
 import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Response
-import space.cowboy.lightglm.LightGLMApplication.Companion.retrofit
-import space.cowboy.lightglm.network.api.ModelAPI
-import space.cowboy.lightglm.network.bean.req.ChatCompletionReq
-import space.cowboy.lightglm.util.LogManager
+import space.cowboy.liteglm.LiteGLMApplication.Companion.retrofit
+import space.cowboy.liteglm.network.api.ModelAPI
+import space.cowboy.liteglm.network.bean.req.ChatCompletionReq
+import space.cowboy.liteglm.util.LogManager
 
 class ChatBot {
 

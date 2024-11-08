@@ -1,4 +1,4 @@
-package space.cowboy.lightglm.network.api
+package space.cowboy.liteglm.network.api
 
 import retrofit2.Call
 import retrofit2.http.Body
@@ -7,9 +7,9 @@ import retrofit2.http.FormUrlEncoded
 import retrofit2.http.Headers
 import retrofit2.http.POST
 import retrofit2.http.Query
-import space.cowboy.lightglm.network.bean.req.ChatCompletionReq
-import space.cowboy.lightglm.network.bean.req.Message
-import space.cowboy.lightglm.network.bean.resp.CompletionsResp
+import space.cowboy.liteglm.network.bean.req.ChatCompletionReq
+import space.cowboy.liteglm.network.bean.req.Message
+import space.cowboy.liteglm.network.bean.resp.CompletionsResp
 
 interface ModelAPI {
     @POST("chat/completions")

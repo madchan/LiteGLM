@@ -1,4 +1,4 @@
-package space.cowboy.lightglm
+package space.cowboy.liteglm
 
 
 object MessageManager {

@@ -1,4 +1,4 @@
-package space.cowboy.lightglm
+package space.cowboy.liteglm
 
 import android.app.Application
 import okhttp3.Interceptor
@@ -8,10 +8,10 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 
-class LightGLMApplication : Application() {
+class LiteGLMApplication : Application() {
 
     companion object {
-        lateinit var instance: LightGLMApplication
+        lateinit var instance: LiteGLMApplication
         lateinit var retrofit: Retrofit
     }
 

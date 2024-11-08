@@ -1,1 +1,1 @@
-# LightGLM
+# LiteGLM

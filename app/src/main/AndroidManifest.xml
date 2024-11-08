@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="space.cowboy.lightglm">
+    package="space.cowboy.liteglm">
 
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name=".LightGLMApplication"
+        android:name=".LiteGLMApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/Theme.LightGLM">
+        android:theme="@style/Theme.LiteGLM">
 
         <service
             android:name=".FloatingButtonService"

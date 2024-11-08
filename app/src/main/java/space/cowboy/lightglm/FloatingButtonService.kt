@@ -1,6 +1,6 @@
-package space.cowboy.lightglm
+package space.cowboy.liteglm
 
-import space.cowboy.lightglm.service.WeChatAccessibilityService.Companion.WECHAT_PACKAGE
+import space.cowboy.liteglm.service.WeChatAccessibilityService.Companion.WECHAT_PACKAGE
 import android.app.Service
 import android.content.Intent
 import android.graphics.PixelFormat
@@ -9,7 +9,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
-import space.cowboy.lightglm.service.WeChatAccessibilityService
+import space.cowboy.liteglm.service.WeChatAccessibilityService
 
 class FloatingButtonService : Service() {
     private var windowManager: WindowManager? = null

@@ -1,4 +1,4 @@
-package space.cowboy.lightglm.util
+package space.cowboy.liteglm.util
 
 class PromptTemplate {
 
