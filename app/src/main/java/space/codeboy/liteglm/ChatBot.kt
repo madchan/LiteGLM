@@ -35,7 +35,7 @@ class ChatBot {
                     resp: Response<CompletionsResp>
                 ) {
                     resp.body()?.choices?.get(0)?.message?.toolCalls?.forEach {
-                        LogManager.log("ChatBot toolCall: $it")
+                        LogManager.log("ChatBot completions onResponse toolCall: ${Gson().toJson(it)}")
                         it.invoke()
                     }
                 }
