@@ -8,6 +8,7 @@ import android.provider.Settings
 import android.view.View
 import android.widget.ScrollView
 import android.widget.TextView
+import space.codeboy.liteglm.ChatBot
 import space.codeboy.liteglm.FloatingButtonService
 import space.codeboy.liteglm.service.WeChatAccessibilityService
 import space.codeboy.liteglm.util.LogManager
@@ -40,6 +41,10 @@ class MainActivity : Activity() {
             startActivityForResult(intent, 1234)
         }
         startServices()
+    }
+
+    fun performReset(view: View?) {
+        ChatBot.instance.waiting = false
     }
 
     private fun setupLogListener() {

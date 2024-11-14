@@ -42,7 +42,7 @@ class ToolCall {
         Thread.sleep(2000)
         val argument = function?.parseArgument()
         when {
-            function?.name?.contains("findAndClickById") == true -> {
+            function?.name?.equals("findAndClickById") == true -> {
                 WeChatAccessibilityService.instance?.findAndClickById(
                     viewId = argument?.viewId ?: "",
                     bounds = android.graphics.Rect(
@@ -54,7 +54,7 @@ class ToolCall {
                 )
             }
 
-            function?.name?.contains("inputTextById") == true-> {
+            function?.name?.equals("inputTextById") == true-> {
                 WeChatAccessibilityService.instance?.inputTextById(
                     viewId = argument?.viewId ?: "",
                     bounds = android.graphics.Rect(
@@ -86,8 +86,8 @@ class Argument {
 }
 
 class Bound {
-    val bottom: Int? = null
     val left: Int? = null
-    val right: Int? = null
     val top: Int? = null
+    val right: Int? = null
+    val bottom: Int? = null
 }

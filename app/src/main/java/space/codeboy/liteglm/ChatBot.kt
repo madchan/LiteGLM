@@ -61,7 +61,7 @@ class ChatBot {
             {
               "type": "function",
               "function": {
-                "name": "findAndClickByIdJson",
+                "name": "findAndClickById",
                 "description": "根据ViewId找到可点击控件并点击",
                 "parameters": {
                   "type": "object",

@@ -4,8 +4,14 @@ import android.app.Application
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okio.Buffer
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import space.codeboy.liteglm.util.LogManager
+import java.io.IOException
+import java.net.URLDecoder
+
+
 
 
 class LiteGLMApplication : Application() {
@@ -34,13 +40,26 @@ class LiteGLMApplication : Application() {
                 val original: Request = chain.request()
                 val requestBuilder: Request.Builder = original.newBuilder()
                     .header("Content-Type", "application/json")
+                    .header("Accept", "application/json")
                     .header("Authorization", "Bearer b7daebec94ae582a875ef3053997da80.0nFvHEiQ2612Jcmg")
                 val request: Request = requestBuilder.build()
+
+                val params = try {
+                    val buffer = Buffer()
+                    request.body?.writeTo(buffer)
+                    URLDecoder.decode(buffer.readUtf8(), "utf-8")
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                    ""
+                }
+                LogManager.log("Interceptor: params = $params")
+
                 chain.proceed(request)
             }).build()
 
         retrofit = Retrofit.Builder()
             .baseUrl("https://open.bigmodel.cn/api/paas/v4/")
+//            .baseUrl("https://api.302.ai/v1/")
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build()

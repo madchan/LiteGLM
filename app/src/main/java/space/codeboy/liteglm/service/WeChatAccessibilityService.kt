@@ -69,30 +69,39 @@ class WeChatAccessibilityService : AccessibilityService() {
     }
 
     fun findAndClickById(viewId: String, bounds: Rect): Boolean {
+        val targetBounds = Rect(bounds.left, bounds.bottom, bounds.right, bounds.top)
         LogManager.log("尝试点击: $viewId")
         val rootNode = rootInActiveWindow ?: return false.also {
             LogManager.log("根节点为空")
         }
 
         /// 目标节点：符合条件的可点击节点
-        val targetNode = rootNode.findAccessibilityNodeInfosByViewId(viewId).first {
+        val targetNodes = rootNode.findAccessibilityNodeInfosByViewId(viewId);
+
+        var targetNode: AccessibilityNodeInfo? = null
+        for (node in targetNodes) {
             val nodeBounds = Rect()
-            it.getBoundsInScreen(nodeBounds)
-            bounds.contains(nodeBounds)
+            node.getBoundsInScreen(nodeBounds)
+            val isContains = targetBounds.contains(nodeBounds)
+            LogManager.log("节点范围: $nodeBounds， 目标范围: $targetBounds， 是否包含: $isContains, 节点信息: ${node.text}")
+            if (isContains) {
+                targetNode = node
+                break
+            }
         }
 
         return if (targetNode != null) {
-            return clickUntil(targetNode)
+            return attemptClick(targetNode)
         } else {
             LogManager.log("未找到可点击节点")
             false
         }
     }
 
-    fun clickUntil(node: AccessibilityNodeInfo): Boolean {
+    private fun attemptClick(node: AccessibilityNodeInfo): Boolean {
         if (!node.isClickable) {
             LogManager.log("节点不可点击, 尝试点击父节点")
-            return clickUntil(node.parent)
+            return attemptClick(node.parent)
         } else {
             val result = node.performAction(AccessibilityNodeInfo.ACTION_CLICK)
             LogManager.log("点击${if (result) "成功" else "失败"}")
