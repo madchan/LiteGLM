@@ -68,7 +68,7 @@ class WeChatAccessibilityService : AccessibilityService() {
         return nodeInfo
     }
 
-    fun findAndClickById(viewId: String, bounds: Rect): Boolean {
+    fun findAndClickById(viewId: String, bounds: Rect, text: String?): Boolean {
         val targetBounds = Rect(bounds.left, bounds.bottom, bounds.right, bounds.top)
         LogManager.log("尝试点击: $viewId")
         val rootNode = rootInActiveWindow ?: return false.also {
@@ -80,11 +80,16 @@ class WeChatAccessibilityService : AccessibilityService() {
 
         var targetNode: AccessibilityNodeInfo? = null
         for (node in targetNodes) {
-            val nodeBounds = Rect()
-            node.getBoundsInScreen(nodeBounds)
-            val isContains = targetBounds.contains(nodeBounds)
-            LogManager.log("节点范围: $nodeBounds， 目标范围: $targetBounds， 是否包含: $isContains, 节点信息: ${node.text}")
-            if (isContains) {
+//            val nodeBounds = Rect()
+//            node.getBoundsInScreen(nodeBounds)
+//            val isContains = targetBounds.contains(nodeBounds)
+//            LogManager.log("节点范围: $nodeBounds， 目标范围: $targetBounds， 是否包含: $isContains, 节点信息: ${node.text}")
+//            if (isContains) {
+//                targetNode = node
+//                break
+//            }
+            LogManager.log("节点信息: ${node.text}, 目标信息: $text")
+            if (node.text.toString() == text) {
                 targetNode = node
                 break
             }

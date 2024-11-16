@@ -41,7 +41,8 @@ class LiteGLMApplication : Application() {
                 val requestBuilder: Request.Builder = original.newBuilder()
                     .header("Content-Type", "application/json")
                     .header("Accept", "application/json")
-                    .header("Authorization", "Bearer b7daebec94ae582a875ef3053997da80.0nFvHEiQ2612Jcmg")
+//                    .header("Authorization", "Bearer b7daebec94ae582a875ef3053997da80.0nFvHEiQ2612Jcmg")
+                    .header("Authorization", "Bearer ff8fb34e49d4076b25036b25d7f53c3c.FE2pApWZamMSEUXC")
                 val request: Request = requestBuilder.build()
 
                 val params = try {

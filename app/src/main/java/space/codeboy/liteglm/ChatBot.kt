@@ -1,14 +1,16 @@
 package space.codeboy.liteglm
 
 import com.google.gson.Gson
+import com.google.gson.JsonSyntaxException
 import retrofit2.Call
 import retrofit2.Response
-import space.codeboy.liteglm.network.bean.req.CompletionReq
-import space.codeboy.liteglm.network.bean.req.Message
-import space.codeboy.liteglm.network.bean.req.Tool
 import space.codeboy.liteglm.LiteGLMApplication.Companion.retrofit
 import space.codeboy.liteglm.network.api.ModelAPI
+import space.codeboy.liteglm.network.bean.req.CompletionReq
+import space.codeboy.liteglm.network.bean.req.ReqMessage
+import space.codeboy.liteglm.network.bean.req.Tool
 import space.codeboy.liteglm.network.bean.resp.CompletionsResp
+import space.codeboy.liteglm.network.bean.resp.RespMessage
 import space.codeboy.liteglm.util.LogManager
 
 class ChatBot {
@@ -34,9 +36,28 @@ class ChatBot {
                     call: Call<CompletionsResp>,
                     resp: Response<CompletionsResp>
                 ) {
-                    resp.body()?.choices?.get(0)?.message?.toolCalls?.forEach {
-                        LogManager.log("ChatBot completions onResponse toolCall: ${Gson().toJson(it)}")
-                        it.invoke()
+                    LogManager.log("ChatBot completions onResponse: body = ${Gson().toJson(resp.body())}")
+                    val message = resp.body()?.choices?.get(0)?.message
+                    var toolCalls = message?.toolCalls
+                    if (toolCalls?.isNotEmpty() == true) {
+                        toolCalls.forEach {
+                            LogManager.log("ChatBot completions onResponse toolCall: ${Gson().toJson(it)}")
+                            it.invoke()
+                        }
+                    } else {
+                        val toolCallsJson = extractJson(message?.content ?: "")
+                        if (toolCallsJson?.isNotEmpty() == true) {
+                            try {
+                                toolCalls = Gson().fromJson(toolCallsJson, RespMessage::class.java).toolCalls
+                                toolCalls?.forEach {
+                                    LogManager.log("ChatBot completions onResponse toolCall: ${Gson().toJson(it)}")
+                                    it.invoke()
+                                }
+                            } catch (e: JsonSyntaxException) {
+                                LogManager.log("ChatBot completions onError: $e")
+                            }
+
+                        }
                     }
                 }
 
@@ -47,11 +68,28 @@ class ChatBot {
             )
     }
 
+    fun extractJson(text: String): String? {
+        // 尝试找到JSON字符串，并忽略任何非JSON文本
+        val jsonStart = text.indexOf('{')
+        val jsonEnd = text.lastIndexOf('}')
+
+        if (jsonStart == -1 || jsonEnd == -1 || jsonStart >= jsonEnd) {
+            return null // 没有找到有效的JSON
+        }
+
+        val jsonString = text.substring(jsonStart, jsonEnd + 1)
+        return removeEscapeCharacters(jsonString)
+    }
+
+    // 去除Json转义符的方法
+    private fun removeEscapeCharacters(input: String): String {
+        return input.replace("\\\"", "\"")
+    }
+
     private fun createCompletionReq(content: String): CompletionReq {
         return CompletionReq(
-            messages = listOf(Message(content.trimIndent(),"user")),
-            model = model,
-            tools = createTools()
+            messages = listOf(ReqMessage(content.trimIndent(),"user")),
+            model = model
         )
     }
 
@@ -73,11 +111,16 @@ class ChatBot {
                     "bound": {
                       "type": "rect",
                       "description": "控件的显示区域"
+                    },
+                    "text": {
+                      "type": "string",
+                      "description": "控件的文本"
                     }
                   },
                   "required": [
                     "viewId",
-                    "bound"
+                    "bound",
+                    "text"
                   ]
                 }
               }
@@ -103,13 +146,17 @@ class ChatBot {
                     },
                     "text": {
                       "type": "string",
+                      "description": "控件的文本"
+                    },
+                    "input": {
+                      "type": "string",
                       "description": "要输入的文本"
                     }
                   },
                   "required": [
                     "viewId",
                     "bound",
-                    "text"
+                    "input"
                   ]
                 }
               }

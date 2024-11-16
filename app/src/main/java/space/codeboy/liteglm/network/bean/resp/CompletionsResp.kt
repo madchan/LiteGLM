@@ -17,7 +17,7 @@ class CompletionsResp {
 class Choice {
     val finish_reason: String? = null
     val index: Int? = null
-    val message: Message? = null
+    val message: RespMessage? = null
 }
 
 class Usage {
@@ -26,11 +26,12 @@ class Usage {
     val total_tokens: Int? = null
 }
 
-data class Message(
-    val content: String,
-    val role: String,
+data class RespMessage(
+    val content: String?,
+    val role: String?,
     @SerializedName("tool_calls")
-    val toolCalls: List<ToolCall>
+    val toolCalls: List<ToolCall>?,
+    val done: Boolean
 )
 
 class ToolCall {
@@ -39,8 +40,8 @@ class ToolCall {
     val type: String? = null
 
     fun invoke() {
-        Thread.sleep(2000)
-        val argument = function?.parseArgument()
+//        Thread.sleep(2000)
+        val argument = function?.getArguments()
         when {
             function?.name?.equals("findAndClickById") == true -> {
                 WeChatAccessibilityService.instance?.findAndClickById(
@@ -50,7 +51,8 @@ class ToolCall {
                         argument?.bound?.top ?: 0,
                         argument?.bound?.right ?: 0,
                         argument?.bound?.bottom ?: 0
-                    )
+                    ),
+                    text =  argument?.text
                 )
             }
 
@@ -71,11 +73,15 @@ class ToolCall {
 }
 
 class Function {
-    val arguments: String? = null
+    @SerializedName("arguments")
+    val argumentsString: String? = null
+    @SerializedName("arguments_entity")
+    val argumentsEntity: Argument? = null
     val name: String? = null
 
-    fun parseArgument(): Argument? {
-        return Gson().fromJson(arguments, Argument::class.java)
+    fun getArguments(): Argument? {
+        if (argumentsEntity != null) return argumentsEntity;
+        return Gson().fromJson(argumentsString, Argument::class.java)
     }
 }
 
@@ -83,6 +89,7 @@ class Argument {
     val bound: Bound? = null
     val viewId: String? = null
     val text: String? = null
+    val input: String? = null
 }
 
 class Bound {

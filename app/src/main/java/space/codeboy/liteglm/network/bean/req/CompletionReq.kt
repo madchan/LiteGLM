@@ -1,12 +1,12 @@
 package space.codeboy.liteglm.network.bean.req
 
 data class CompletionReq(
-    val messages: List<Message>,
-    val model: String,
-    val tools: List<Tool>
+    val messages: List<ReqMessage>?,
+    val model: String?,
+    val tools: List<Tool>? = null
 )
 
-data class Message(
+data class ReqMessage(
     val content: String,
     val role: String
 )
